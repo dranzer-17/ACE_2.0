@@ -39,8 +39,13 @@ export function Sidebar({ navItems }: SidebarProps) {
           return (
             <Link key={item.href} href={item.href} passHref>
               <Button
-                variant={isActive ? "secondary" : "ghost"}
-                className="w-full justify-start"
+                // --- THIS IS THE KEY CHANGE ---
+                variant={isActive ? "default" : "ghost"}
+                className={`w-full justify-start ${
+                  isActive
+                    ? "bg-gray-900 text-white hover:bg-gray-800 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200"
+                    : ""
+                }`}
               >
                 <item.icon className="w-4 h-4 mr-3" />
                 {item.label}
