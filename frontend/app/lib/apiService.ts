@@ -85,21 +85,20 @@ export const apiService = {
    * @param orderData The contents of the shopping cart.
    * @param userId The ID of the user placing the order.
    */
-  placeOrder: async (orderData: any, userId: any) => {
+  placeOrder: async (orderData: any) => { // <-- SIMPLIFIED: only one argument now
     try {
       const response = await fetch(`${API_URL}/canteen/orders`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        // For the hackathon, we send userId in the body.
-        // In a real app, this would be a JWT token in the header.
-        body: JSON.stringify({ ...orderData, user_id: userId }),
+        // --- SIMPLIFIED: Just send the orderData object directly ---
+        body: JSON.stringify(orderData),
       });
 
       const data = await response.json();
       if (!response.ok) {
         return { success: false, message: data.detail || 'Failed to place order.' };
       }
-      return { success: true, message: 'Order placed successfully!' };
+      return { success: true, message: 'Order placed successfully!', order: data };
     } catch (error) {
       console.error("Place Order API error:", error);
       return { success: false, message: 'An unexpected error occurred.' };

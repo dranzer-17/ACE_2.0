@@ -12,7 +12,6 @@ export type MenuItem = {
   description: string;
   price: number;
   category: 'veg' | 'non-veg' | 'jain';
-  image_url: string;
 };
 
 interface MenuItemCardProps {
@@ -30,17 +29,6 @@ const categoryColors = {
 export function MenuItemCard({ item, onAddToCart }: MenuItemCardProps) {
   return (
     <Card className="flex flex-col h-full overflow-hidden">
-      <CardHeader className="p-0">
-        <div className="relative w-full h-48">
-          <Image
-            src={item.image_url || "/placeholder-food.jpg"} // Use a placeholder if no image
-            alt={item.name}
-            layout="fill"
-            objectFit="cover"
-            className="transition-transform duration-300 hover:scale-105"
-          />
-        </div>
-      </CardHeader>
       <CardContent className="flex-1 p-4">
         <div className="flex justify-between items-start mb-2">
           <CardTitle className="text-lg">{item.name}</CardTitle>

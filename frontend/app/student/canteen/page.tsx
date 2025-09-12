@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { apiService } from "@/app/lib/apiService";
+import { apiService } from "@/app/lib/apiService"; // Corrected path if your apiService is in lib
 import { toast } from "sonner";
 
 // --- Import UI Components ---
@@ -16,6 +16,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogFooter,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -29,19 +30,29 @@ type CartItem = {
   instructions: string;
 };
 
+// --- Define the shape of the successful order for the modal ---
+type PlacedOrderDetails = {
+  id: number;
+  items: CartItem[];
+  totalPrice: number;
+};
+
 export default function StudentCanteenPage() {
   const { user } = useAuth();
   const [menu, setMenu] = useState<MenuItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [filters, setFilters] = useState<string[]>([]); // e.g., ['veg', 'jain']
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  const [filters, setFilters] = useState<string[]>([]);
   const [cart, setCart] = useState<CartItem[]>([]);
   
   // State for the "Add to Cart" modal
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [quantity, setQuantity] = useState(1);
-  const [instructions, setInstructions] = useState("");
+  const [instructions, setInstructions] = useState<string>("");
 
-  // Fetch the menu when the component loads
+  // --- NEW STATE for the success modal ---
+  const [lastOrder, setLastOrder] = useState<PlacedOrderDetails | null>(null);
+
   useEffect(() => {
     const fetchMenu = async () => {
       setIsLoading(true);
@@ -56,22 +67,25 @@ export default function StudentCanteenPage() {
     fetchMenu();
   }, []);
 
-  // Handle filter changes
   const handleFilterChange = (category: string) => {
-    setFilters((prev) =>
-      prev.includes(category)
-        ? prev.filter((c) => c !== category)
-        : [...prev, category]
-    );
+    setFilters((prev) => {
+      const newFilters = new Set(prev);
+      if (newFilters.has(category)) {
+        newFilters.delete(category);
+      } else {
+        newFilters.add(category);
+      }
+      return Array.from(newFilters);
+    });
   };
 
-  // Filter the menu based on the selected filters
   const filteredMenu =
     filters.length > 0
-      ? menu.filter((item) => filters.includes(item.category))
+      ? menu.filter((item) =>
+          filters.some(filterCat => item.category.split(',').includes(filterCat))
+        )
       : menu;
 
-  // --- Cart Management Functions ---
   const handleOpenAddToCartModal = (item: MenuItem) => {
     setSelectedItem(item);
     setQuantity(1);
@@ -80,24 +94,17 @@ export default function StudentCanteenPage() {
 
   const handleConfirmAddToCart = () => {
     if (!selectedItem || quantity < 1) return;
-    
-    // Check if the item is already in the cart
     const existingItemIndex = cart.findIndex(ci => ci.menuItem.id === selectedItem.id && ci.instructions === instructions);
 
     if (existingItemIndex > -1) {
-      // If same item with same instructions exists, just update quantity
       const updatedCart = [...cart];
       updatedCart[existingItemIndex].quantity += quantity;
       setCart(updatedCart);
     } else {
-      // Otherwise, add as a new cart item
-      setCart([
-        ...cart,
-        { menuItem: selectedItem, quantity, instructions },
-      ]);
+      setCart([...cart, { menuItem: selectedItem, quantity, instructions }]);
     }
     toast.success(`${quantity} x ${selectedItem.name} added to cart.`);
-    setSelectedItem(null); // Close the modal
+    setSelectedItem(null);
   };
 
   const removeFromCart = (index: number) => {
@@ -106,36 +113,39 @@ export default function StudentCanteenPage() {
   
   const totalCartPrice = cart.reduce((total, item) => total + item.menuItem.price * item.quantity, 0);
 
-  // --- Order Submission ---
+  // --- UPDATED Order Submission ---
   const handlePlaceOrder = async () => {
     if (!user || cart.length === 0) return;
-    setIsLoading(true);
+    setIsPlacingOrder(true);
 
-    const orderData = {
+    const fullOrderData = {
+      user_id: user.id,
       items: cart.map(ci => ({
         menu_item_id: ci.menuItem.id,
         quantity: ci.quantity,
-        special_instructions: ci.instructions
-      }))
+        special_instructions: ci.instructions,
+      })),
     };
     
-    // NOTE: For the hackathon, we pass the user ID in the body.
-    const result = await apiService.placeOrder(orderData, user.id);
+    const result = await apiService.placeOrder(fullOrderData);
 
-    if (result.success) {
-      toast.success(result.message);
-      setCart([]); // Clear the cart
+    if (result.success && result.order) { // Check for `result.order`
+      setLastOrder({
+        id: result.order.id, // Use the new `order` property
+        items: cart,
+        totalPrice: totalCartPrice
+      });
+      setCart([]);
     } else {
       toast.error(result.message);
     }
-    setIsLoading(false);
+    setIsPlacingOrder(false);
   };
 
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold">Canteen Menu</h1>
 
-      {/* --- Filters --- */}
       <div className="flex items-center space-x-6 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
         <p className="font-semibold">Preferences:</p>
         {['veg', 'non-veg', 'jain'].map((category) => (
@@ -146,7 +156,6 @@ export default function StudentCanteenPage() {
         ))}
       </div>
 
-      {/* --- Menu Grid --- */}
       {isLoading ? (
         <p>Loading menu...</p>
       ) : (
@@ -157,14 +166,10 @@ export default function StudentCanteenPage() {
         </div>
       )}
 
-      {/* --- Floating Cart Button --- */}
       {cart.length > 0 && (
         <Dialog>
           <DialogTrigger asChild>
-            <Button
-              className="fixed bottom-8 right-8 rounded-full h-16 w-16 shadow-lg"
-              size="icon"
-            >
+            <Button className="fixed bottom-8 right-8 rounded-full h-16 w-16 shadow-lg" size="icon">
               <ShoppingCart />
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center">
                 {cart.reduce((total, item) => total + item.quantity, 0)}
@@ -182,9 +187,7 @@ export default function StudentCanteenPage() {
                   </div>
                   <div className="flex items-center gap-4">
                      <p>₹{(item.menuItem.price * item.quantity).toFixed(2)}</p>
-                    <Button variant="ghost" size="icon" onClick={() => removeFromCart(index)}>
-                      <X className="w-4 h-4" />
-                    </Button>
+                    <Button variant="ghost" size="icon" onClick={() => removeFromCart(index)}><X className="w-4 h-4" /></Button>
                   </div>
                 </div>
               ))}
@@ -194,26 +197,25 @@ export default function StudentCanteenPage() {
                     <span>Total</span>
                     <span>₹{totalCartPrice.toFixed(2)}</span>
                 </div>
-              <Button size="lg" onClick={handlePlaceOrder} disabled={isLoading}>
-                {isLoading ? "Placing Order..." : "Place Order"}
+              <Button size="lg" onClick={handlePlaceOrder} disabled={isPlacingOrder}>
+                {isPlacingOrder ? "Placing Order..." : "Place Order"}
               </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
       )}
 
-      {/* --- Add to Cart Modal --- */}
       <Dialog open={!!selectedItem} onOpenChange={(isOpen) => !isOpen && setSelectedItem(null)}>
           <DialogContent>
               <DialogHeader><DialogTitle>Add "{selectedItem?.name}" to Cart</DialogTitle></DialogHeader>
               <div className="space-y-4">
                   <div>
                       <Label htmlFor="quantity">Quantity</Label>
-                      <Input id="quantity" type="number" min="1" value={quantity} onChange={(e) => setQuantity(parseInt(e.target.value, 10))} />
+                      <Input id="quantity" type="number" min="1" value={quantity} onChange={(e) => setQuantity(parseInt(e.target.value, 10) || 1)} />
                   </div>
                   <div>
                       <Label htmlFor="instructions">Special Instructions (optional)</Label>
-                      <Textarea id="instructions" placeholder="e.g., extra spicy, no salt..." value={instructions} onChange={(e) => setInstructions(e.target.value)} />
+                      <Textarea id="instructions" placeholder="e.g., extra spicy, no salt..." value={instructions || ""} onChange={(e) => setInstructions(e.target.value)} />
                   </div>
               </div>
               <DialogFooter>
@@ -221,6 +223,36 @@ export default function StudentCanteenPage() {
                   <Button onClick={handleConfirmAddToCart}>Confirm Add</Button>
               </DialogFooter>
           </DialogContent>
+      </Dialog>
+      
+      {/* --- NEW "ORDER SUCCESS" MODAL --- */}
+      <Dialog open={!!lastOrder} onOpenChange={() => setLastOrder(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="text-2xl text-green-600">Order Placed Successfully!</DialogTitle>
+            <DialogDescription>Your order #{lastOrder?.id} has been sent to the canteen.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4 max-h-[50vh] overflow-y-auto">
+            {lastOrder?.items.map((item, index) => (
+              <div key={index} className="flex justify-between items-start">
+                <div>
+                  <p className="font-semibold">{item.quantity} x {item.menuItem.name}</p>
+                  {item.instructions && <p className="text-xs text-gray-500">"{item.instructions}"</p>}
+                </div>
+                <p>₹{(item.menuItem.price * item.quantity).toFixed(2)}</p>
+              </div>
+            ))}
+            <div className="flex justify-between font-bold text-lg border-t pt-4 mt-4">
+              <span>Total</span>
+              <span>₹{lastOrder?.totalPrice.toFixed(2)}</span>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button onClick={() => setLastOrder(null)} className="w-full">
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
       </Dialog>
     </div>
   );

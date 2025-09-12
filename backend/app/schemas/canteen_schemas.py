@@ -13,8 +13,7 @@ class MenuItemBase(BaseModel):
     description: Optional[str] = None
     price: Decimal
     # Enforce category can only be one of these values
-    category: constr(pattern='^(veg|non-veg|jain)$') 
-    image_url: Optional[str] = None
+    category: str
     is_available: bool = True
 
 # Schema for creating a new menu item (used by Admin)
@@ -45,6 +44,7 @@ class OrderItemCreate(BaseModel):
 # Schema for the entire new order request (sent from Student)
 class OrderCreate(BaseModel):
     items: List[OrderItemCreate]
+    user_id: int
 
 # --- Schemas for Reading Order Data ---
 

@@ -101,15 +101,15 @@ class ActivityLog(Base):
     # --- CORRECTED TIMESTAMP ---
     timestamp = Column(TIMESTAMP(timezone=True), server_default='now()')
 
-# --- MenuItem Model ---
 class MenuItem(Base):
     __tablename__ = "menu_items"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False, index=True)
     description = Column(TEXT)
     price = Column(DECIMAL(10, 2), nullable=False)
+    # --- CHANGE ---
+    # We will store categories as a comma-separated string like "veg,jain"
     category = Column(String, nullable=False, default="veg")
-    image_url = Column(String)
     is_available = Column(Boolean, default=True)
 
 # --- Order Model ---

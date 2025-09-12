@@ -1,0 +1,86 @@
+[
+  {
+    "name": "Samosa",
+    "description": "Crispy pastry with spiced potato filling.",
+    "price": 20.00,
+    "category": "veg,jain"
+  },
+  {
+    "name": "Vada Pav",
+    "description": "The classic Mumbai street food.",
+    "price": 25.00,
+    "category": "veg"
+  },
+  {
+    "name": "Paneer Tikka Roll",
+    "description": "Spiced paneer wrapped in a soft flatbread.",
+    "price": 80.00,
+    "category": "veg"
+  },
+  {
+    "name": "Masala Dosa",
+    "description": "Thin rice crepe with potato filling.",
+    "price": 70.00,
+    "category": "veg,jain"
+  },
+  {
+    "name": "Idli Sambar",
+    "description": "Steamed rice cakes with lentil soup.",
+    "price": 50.00,
+    "category": "veg,jain"
+  },
+  {
+    "name": "Veg Hakka Noodles",
+    "description": "Stir-fried noodles with vegetables.",
+    "price": 90.00,
+    "category": "veg"
+  },
+  {
+    "name": "Chicken Biryani",
+    "description": "Aromatic rice with spiced chicken.",
+    "price": 150.00,
+    "category": "non-veg"
+  },
+  {
+    "name": "Butter Chicken",
+    "description": "Creamy tomato-based chicken curry.",
+    "price": 180.00,
+    "category": "non-veg"
+  },
+  {
+    "name": "Chicken Lollipop",
+    "description": "Frenched chicken winglet appetizer.",
+    "price": 120.00,
+    "category": "non-veg"
+  },
+  {
+    "name": "Veg Thali",
+    "description": "A complete meal with multiple veg dishes.",
+    "price": 120.00,
+    "category": "veg"
+  },
+  {
+    "name": "Jain Thali",
+    "description": "A thali prepared without root vegetables.",
+    "price": 130.00,
+    "category": "jain"
+  },
+  {
+    "name": "Fresh Lime Soda",
+    "description": "Sweet and salty refreshing drink.",
+    "price": 30.00,
+    "category": "veg,jain"
+  },
+  {
+    "name": "Coffee",
+    "description": "Hot brewed coffee.",
+    "price": 25.00,
+    "category": "veg,jain"
+  },
+  {
+    "name": "Tea",
+    "description": "Classic Indian chai.",
+    "price": 15.00,
+    "category": "veg"
+  }
+]
