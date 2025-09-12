@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 # --- CORRECTED IMPORTS ---
-from .. import database, models
+from .. import database
+from ..models import user_models as models
 from ..schemas import user_schemas as schemas # This alias makes the code clean
 
 # Create a "router" to group all authentication-related endpoints

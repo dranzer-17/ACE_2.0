@@ -4,22 +4,16 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
-// --- 1. Import our REAL apiService ---
-import { apiService } from "@/app/lib/apiService";
+import { apiService } from "@/app/lib/apiService"; 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft } from "lucide-react";
-
-// NOTE: We will only build the logic for the 'student' tab for now,
-// as our backend only supports student signup. The other tabs are UI-ready.
 
 export default function RegisterPage() {
   const [selectedRole, setSelectedRole] = useState("student");
-  const [studentStep, setStudentStep] = useState(1);
   
   // State for the student form
   const [fullName, setFullName] = useState("");
@@ -34,33 +28,28 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  const handleStudentNextStep = () => {
-    // Basic validation for the first step
-    if (!fullName || !sapId || !rollNumber || !className || !division || !password || !confirmPassword) {
-      return toast.error("Please fill all required fields in Step 1.");
-    }
-    if (password !== confirmPassword) {
-      return toast.error("Passwords do not match.");
-    }
-    // For this hackathon version, we are not implementing the second step with profile details yet.
-    // We will proceed directly to submission.
-    handleSubmit();
-  };
-
   const handleSubmit = async () => {
+    // --- FIX 2: This function should ONLY handle the currently selected tab ---
     if (selectedRole !== 'student') {
         toast.info("Faculty and Committee registration is not yet available.");
         return;
     }
 
+    // Validation for student form
+    if (!fullName || !sapId || !rollNumber || !className || !division || !password || !confirmPassword) {
+      return toast.error("Please fill all required fields for the student account.");
+    }
+    if (password !== confirmPassword) {
+      return toast.error("Passwords do not match.");
+    }
+
     setIsLoading(true);
     
-    // Prepare the data for our backend's StudentCreate schema
     const studentApiData = {
       full_name: fullName,
       email: email,
       password: password,
-      sap_id: parseInt(sapId, 10), // Ensure SAP ID is a number
+      sap_id: parseInt(sapId, 10),
       roll_number: rollNumber,
       class_name: className,
       division: division,
@@ -91,36 +80,42 @@ export default function RegisterPage() {
         <CardHeader>
           <Tabs value={selectedRole} onValueChange={setSelectedRole} className="w-full">
             <TabsList className="grid w-full grid-cols-3">
+              {/* --- FIX 1: REMOVE the 'disabled' prop to enable switching --- */}
               <TabsTrigger value="student">Student</TabsTrigger>
-              <TabsTrigger value="faculty" disabled>Faculty</TabsTrigger>
-              <TabsTrigger value="committee" disabled>Committee</TabsTrigger>
+              <TabsTrigger value="faculty">Faculty</TabsTrigger>
+              <TabsTrigger value="committee">Committee</TabsTrigger>
             </TabsList>
           </Tabs>
           <div className="pt-4 text-center">
-            <CardTitle className="text-2xl font-bold">Create a Student Account</CardTitle>
+             {/* Dynamic title based on selected tab */}
+            <CardTitle className="text-2xl font-bold">Create a {selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)} Account</CardTitle>
             <CardDescription>Join the platform to unlock your campus potential.</CardDescription>
           </div>
-          {/* We can add the progress bar back if we add a second step */}
-          {/* <Progress value={studentStep * 100} className="w-full mt-4" /> */}
         </CardHeader>
 
         <CardContent>
-          {/* --- Student Form --- */}
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="space-y-2"><Label htmlFor="fullName">Full Name*</Label><Input id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} disabled={isLoading} /></div>
-            <div className="space-y-2"><Label htmlFor="email">Email*</Label><Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} disabled={isLoading} /></div>
-            <div className="space-y-2"><Label htmlFor="sapId">SAP ID*</Label><Input id="sapId" type="number" value={sapId} onChange={(e) => setSapId(e.target.value)} disabled={isLoading} /></div>
-            <div className="space-y-2"><Label htmlFor="rollNumber">Roll Number*</Label><Input id="rollNumber" value={rollNumber} onChange={(e) => setRollNumber(e.target.value)} disabled={isLoading} /></div>
-            <div className="space-y-2"><Label htmlFor="className">Class*</Label><Input id="className" placeholder="e.g., TE-1" value={className} onChange={(e) => setClassName(e.target.value)} disabled={isLoading} /></div>
-            <div className="space-y-2"><Label htmlFor="division">Division*</Label><Input id="division" placeholder="e.g., A" value={division} onChange={(e) => setDivision(e.target.value)} disabled={isLoading} /></div>
-            <div className="space-y-2"><Label htmlFor="password">Password*</Label><Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} disabled={isLoading} /></div>
-            <div className="space-y-2"><Label htmlFor="confirmPassword">Confirm Password*</Label><Input id="confirmPassword" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} disabled={isLoading} /></div>
-          </div>
+          {selectedRole === 'student' && (
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="space-y-2"><Label htmlFor="fullName">Full Name*</Label><Input id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} disabled={isLoading} /></div>
+              <div className="space-y-2"><Label htmlFor="email">Email*</Label><Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} disabled={isLoading} /></div>
+              <div className="space-y-2"><Label htmlFor="sapId">SAP ID*</Label><Input id="sapId" type="number" value={sapId} onChange={(e) => setSapId(e.target.value)} disabled={isLoading} /></div>
+              <div className="space-y-2"><Label htmlFor="rollNumber">Roll Number*</Label><Input id="rollNumber" value={rollNumber} onChange={(e) => setRollNumber(e.target.value)} disabled={isLoading} /></div>
+              <div className="space-y-2"><Label htmlFor="className">Class*</Label><Input id="className" placeholder="e.g., TE-1" value={className} onChange={(e) => setClassName(e.target.value)} disabled={isLoading} /></div>
+              <div className="space-y-2"><Label htmlFor="division">Division*</Label><Input id="division" placeholder="e.g., A" value={division} onChange={(e) => setDivision(e.target.value)} disabled={isLoading} /></div>
+              <div className="space-y-2"><Label htmlFor="password">Password*</Label><Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} disabled={isLoading} /></div>
+              <div className="space-y-2"><Label htmlFor="confirmPassword">Confirm Password*</Label><Input id="confirmPassword" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} disabled={isLoading} /></div>
+            </div>
+          )}
+          {selectedRole === 'faculty' && <div className="text-center p-8 text-gray-500">Faculty registration form will be here.</div>}
+          {selectedRole === 'committee' && <div className="text-center p-8 text-gray-500">Committee registration form will be here.</div>}
         </CardContent>
 
         <CardFooter className="flex justify-between">
           <Link href="/auth/login" className="text-sm"><Button variant="ghost">Already have an account?</Button></Link>
-          <Button onClick={handleStudentNextStep} disabled={isLoading}>{isLoading ? "Creating Account..." : "Create Account"}</Button>
+          {/* --- FIX 3: This button now calls the main handleSubmit function --- */}
+          <Button onClick={handleSubmit} disabled={isLoading}>
+            {isLoading ? "Creating Account..." : "Create Account"}
+          </Button>
         </CardFooter>
       </Card>
     </main>

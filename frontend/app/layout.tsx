@@ -18,10 +18,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning> {/* Add suppressHydrationWarning */}
+    <html lang="en" suppressHydrationWarning> 
       <body className={inter.className}>
-        {/* --- 2. Wrap everything with the ThemeProvider --- */}
-        {/* It's good practice to have theme provider on the outside */}
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
