@@ -5,6 +5,7 @@ import { AuthProvider } from "@/hooks/useAuth";
 // --- 1. Import the ThemeProvider ---
 import { ThemeProvider } from "@/components/providers/theme-provider";
 
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
