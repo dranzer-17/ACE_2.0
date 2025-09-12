@@ -1,48 +1,43 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from dotenv import load_dotenv
-import os
+from .database import engine
+from .models import user_models
+from .routes import auth_routes
 
-# Load environment variables from .env file
-load_dotenv()
+# --- CRITICAL STEP ---
+# This line tells SQLAlchemy to create all the database tables
+# based on the models defined in `user_models.py`.
+# It runs when the application starts and will not re-create tables that already exist.
+user_models.Base.metadata.create_all(bind=engine)
 
-# Create the FastAPI app instance
-app = FastAPI()
+# Initialize the FastAPI application instance
+app = FastAPI(
+    title="ACE 2.0 API",
+    description="Backend API for the ACE 2.0 Campus Solution Platform.",
+    version="1.0.0",
+)
 
-# --- Middleware ---
-# Set up CORS to allow requests from your frontend
-# This is crucial for development
-
-# Get the frontend URL from an environment variable, with a default
-FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
-
+# --- CORS MIDDLEWARE ---
+# This is ESSENTIAL for allowing your Next.js frontend to talk to the backend.
+# Without this, you will get CORS errors in the browser.
 origins = [
-    FRONTEND_URL,
-    # You can add more origins here if needed (e.g., your deployed frontend URL)
+    "http://localhost:3000", # The URL of your running frontend
 ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"], # Allows all methods (GET, POST, etc.)
+    allow_methods=["*"], # Allows all HTTP methods (GET, POST, etc.)
     allow_headers=["*"], # Allows all headers
 )
 
+# --- INCLUDE API ROUTERS ---
+# This makes the endpoints from `auth_routes.py` available in the application.
+# All routes in `auth_routes` will now be accessible under the `/auth` prefix.
+app.include_router(auth_routes.router)
 
-# --- API Routes ---
-
-@app.get("/")
+# A simple root endpoint to quickly check if the API is running
+@app.get("/", tags=["Root"])
 def read_root():
-    """
-    Root endpoint for the API.
-    """
     return {"message": "Welcome to the ACE_2.0 Backend API!"}
-
-
-@app.get("/api/hello")
-def get_hello_message():
-    """
-    A simple example endpoint that the frontend can call.
-    """
-    return {"message": "Hello from the FastAPI backend!"}
