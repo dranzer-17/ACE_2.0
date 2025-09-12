@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { apiService } from "@/app/lib/apiService";
 import { toast } from "sonner";
 
@@ -154,7 +154,7 @@ export default function ManageTimetablePage() {
         {days.map(day => <div key={day} className="text-center font-bold">{day}</div>)}
 
         {timeSlots.map(time => (
-          <>
+          <React.Fragment key={time}>
             <div className="font-semibold p-2 text-right">{new Date(`1970-01-01T${time}Z`).toLocaleTimeString('en-US', {hour: 'numeric', minute: '2-digit', hour12: true})}</div>
             {days.map((day, dayIndex) => {
               const key = `${dayIndex + 1}-${time}`;
@@ -173,7 +173,7 @@ export default function ManageTimetablePage() {
                 </div>
               );
             })}
-          </>
+          </React.Fragment>
         ))}
       </div>
       

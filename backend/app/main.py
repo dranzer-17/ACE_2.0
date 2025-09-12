@@ -2,12 +2,12 @@ import json
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-
+from .models import user_models, library_models
 
 # --- Import necessary database and model components ---
 from .database import engine, SessionLocal
 from .models import user_models
-from .routes import auth_routes, canteen_routes, management_routes, timetable_routes, feedback_routes
+from .routes import auth_routes, canteen_routes, management_routes, timetable_routes, feedback_routes, library_routes 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -67,6 +67,37 @@ async def lifespan(app: FastAPI):
         else:
             print("Menu already exists. Skipping.")
 
+        if db.query(library_models.Book).count() == 0:
+            print("Library is empty. Seeding initial books from JSON...")
+            try:
+                # Find the admin user to associate the books with
+                admin_user = db.query(user_models.User).join(user_models.Role).filter(user_models.Role.name == "admin").first()
+                if not admin_user:
+                    # Fallback if the specific admin role isn't found, though it should be.
+                    admin_user = db.query(user_models.User).filter(user_models.User.id == 1).first()
+
+                if admin_user:
+                    # Open and load the JSON file
+                    with open("app/library_data.json", "r") as f:
+                        library_data = json.load(f)
+                    
+                    # Loop through the loaded data and create Book objects
+                    for book_data in library_data:
+                        book_data['added_by_id'] = admin_user.id # Add the admin's ID to each book
+                        db.add(library_models.Book(**book_data))
+                    
+                    db.commit()
+                    print("Library book seeding complete!")
+                else:
+                    print("ERROR: Admin user not found. Cannot seed library books.")
+
+            except FileNotFoundError:
+                print("ERROR: app/library_data.json not found. Skipping library seeding.")
+            except Exception as e:
+                print(f"An error occurred during library seeding: {e}")
+        else:
+            print("Library books already exist. Skipping.")
+
     finally:
         db.close()
     
@@ -74,8 +105,10 @@ async def lifespan(app: FastAPI):
     print("Application shutdown.")
 
 
+
 # --- Create the database tables ---
 user_models.Base.metadata.create_all(bind=engine)
+library_models.Base.metadata.create_all(bind=engine)
 
 # --- Initialize the FastAPI app with the lifespan event ---
 app = FastAPI(
@@ -101,6 +134,7 @@ app.include_router(canteen_routes.router)
 app.include_router(management_routes.router) # <-- ADD THIS LINE
 app.include_router(timetable_routes.router)
 app.include_router(feedback_routes.router) 
+app.include_router(library_routes.router) 
 
 @app.get("/", tags=["Root"])
 def read_root():

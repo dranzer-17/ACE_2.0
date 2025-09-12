@@ -2,7 +2,7 @@
 
 import { Sidebar } from "@/components/shared/Sidebar";
 import { Header } from "@/components/shared/Header";
-import { LayoutDashboard, Users, ClipboardList, Package, Utensils, Library, Book, Clipboard } from "lucide-react";
+import { LayoutDashboard, Users, ClipboardList, Package, Utensils, Library, Book, Clipboard, MessageCircle } from "lucide-react";
 
 // --- Define the navigation links for ADMIN ---
 const adminNavItems = [
@@ -14,6 +14,7 @@ const adminNavItems = [
   { href: "/admin/library", label: "Library", icon: Library },
   { href: "/admin/classrooms", label: "Classrooms", icon: Clipboard },
   { href: "/admin/courses", label: "Courses", icon: Book },
+  {href: "/admin/feedback",label: "Feedback",icon: MessageCircle},
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

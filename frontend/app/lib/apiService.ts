@@ -346,4 +346,97 @@ export const apiService = {
       return { success: false, message: 'An unexpected error occurred.' };
     }
   },
+
+  getAdminBooks: async () => {
+    try {
+      const response = await fetch(`${API_URL}/library/admin/books`);
+      if (!response.ok) throw new Error("Failed to fetch books");
+      return { success: true, data: await response.json() };
+    } catch (error) {
+      console.error("API Error - getAdminBooks:", error);
+      return { success: false, message: "Could not load books." };
+    }
+  },
+
+  getAdminAllocations: async () => {
+    try {
+      const response = await fetch(`${API_URL}/library/admin/allocations`);
+      if (!response.ok) throw new Error("Failed to fetch allocations");
+      return { success: true, data: await response.json() };
+    } catch (error) {
+      console.error("API Error - getAdminAllocations:", error);
+      return { success: false, message: "Could not load allocations." };
+    }
+  },
+
+  addBook: async (bookData: any) => {
+    try {
+      const response = await fetch(`${API_URL}/library/admin/books`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(bookData),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.detail || "Failed to add book");
+      return { success: true, message: "Book added successfully!" };
+    } catch (error: any) {
+      console.error("API Error - addBook:", error);
+      return { success: false, message: error.message };
+    }
+  },
+
+  markBookReturned: async (allocationId: number) => {
+    try {
+      const response = await fetch(`${API_URL}/library/admin/allocations/${allocationId}/return`, {
+        method: "POST",
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.detail || "Failed to return book");
+      return { success: true, message: "Book marked as returned!" };
+    } catch (error: any) {
+      console.error("API Error - markBookReturned:", error);
+      return { success: false, message: error.message };
+    }
+  },
+
+  // --- Student ---
+  getStudentBooks: async () => {
+    try {
+      const response = await fetch(`${API_URL}/library/student/books`);
+      if (!response.ok) throw new Error("Failed to fetch books");
+      return { success: true, data: await response.json() };
+    } catch (error) {
+      console.error("API Error - getStudentBooks:", error);
+      return { success: false, message: "Could not load books." };
+    }
+  },
+
+  getMyBooks: async (studentId: number) => { // <-- FIX: Accept studentId
+    try {
+      // --- FIX: Add studentId to the URL ---
+      const response = await fetch(`${API_URL}/library/student/my-books/${studentId}`);
+      if (!response.ok) throw new Error("Failed to fetch personal library data");
+      return { success: true, data: await response.json() };
+    } catch (error) {
+      console.error("API Error - getMyBooks:", error);
+      return { success: false, message: "Could not load your books." };
+    }
+  },
+
+  requestBook: async (bookId: number, studentId: number) => { // <-- FIX: Accept studentId
+    try {
+      const response = await fetch(`${API_URL}/library/student/books/${bookId}/request`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        // --- FIX: Send student_id in the body ---
+        body: JSON.stringify({ student_id: studentId }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.detail || "Failed to request book");
+      return { success: true, data };
+    } catch (error: any) {
+      console.error("API Error - requestBook:", error);
+      return { success: false, message: error.message };
+    }
+  }
 };

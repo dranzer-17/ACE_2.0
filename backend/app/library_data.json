@@ -1,0 +1,47 @@
+[
+  {
+    "title": "Clean Code: A Handbook of Agile Software Craftsmanship",
+    "author": "Robert C. Martin",
+    "isbn": "9780132350884",
+    "description": "A comprehensive guide to writing clean, maintainable code with practical examples and best practices.",
+    "category": "Programming",
+    "total_copies": 3,
+    "available_copies": 3
+  },
+  {
+    "title": "The Pragmatic Programmer",
+    "author": "David Thomas, Andrew Hunt",
+    "isbn": "9780201616224",
+    "description": "Essential reading for software developers, covering practical approaches to programming and career development.",
+    "category": "Programming",
+    "total_copies": 2,
+    "available_copies": 2
+  },
+  {
+    "title": "Introduction to Algorithms",
+    "author": "Thomas H. Cormen",
+    "isbn": "9780262033848",
+    "description": "Comprehensive introduction to algorithms and data structures with mathematical rigor.",
+    "category": "Computer Science",
+    "total_copies": 5,
+    "available_copies": 5
+  },
+  {
+    "title": "Design Patterns: Elements of Reusable Object-Oriented Software",
+    "author": "Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides",
+    "isbn": "9780201633610",
+    "description": "Classic book on software design patterns with examples in C++ and Smalltalk.",
+    "category": "Software Engineering",
+    "total_copies": 2,
+    "available_copies": 2
+  },
+  {
+    "title": "JavaScript: The Good Parts",
+    "author": "Douglas Crockford",
+    "isbn": "9780596517748",
+    "description": "A concise guide to the best features of JavaScript programming language.",
+    "category": "Web Development",
+    "total_copies": 4,
+    "available_copies": 4
+  }
+]

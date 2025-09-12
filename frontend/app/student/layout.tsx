@@ -7,6 +7,7 @@ import {
   MessageSquare,
   BookOpen,
   ClipboardList,
+  MessageCircle,
 } from "lucide-react";
 import { Header } from "@/components/shared/Header"; 
 // --- Define the navigation links specifically for students ---
@@ -40,6 +41,11 @@ const studentNavItems = [
     href: "/student/timetable",
     label: "Timetable",
     icon: ClipboardList,
+  },
+  {
+    href: "/student/feedback",
+    label: "Feedback",
+    icon: MessageCircle,
   },
 ];
 
