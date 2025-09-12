@@ -1,0 +1,42 @@
+# --- Environment ---
+# Ignore the virtual environment folder. This is critical.
+venv/
+env/
+.venv/
+
+# --- Secrets ---
+# Ignore environment variables files. These contain sensitive data.
+.env
+*.env
+
+# --- Python ---
+# Ignore Python cache files and compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- IDE / Editor ---
+# Ignore configuration folders for common editors
+.vscode/
+.idea/
+.project
+.pydevproject
+.settings/
+
+# --- Operating System ---
+# Ignore macOS specific files
+.DS_Store
+
+# Ignore Windows specific files
+Thumbs.db
+
+# --- Testing ---
+# Ignore testing artifacts and coverage reports
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# --- Logs ---
+# Ignore log files
+*.log

@@ -85,7 +85,7 @@ Make sure your virtual environment is activated (`source venv/bin/activate`) and
     This command tells Uvicorn to run the `app` instance from the `main.py` file located in the `app` directory. The `--reload` flag automatically restarts the server when you make code changes.
 
     ```sh
-    uvicorn app.main:app --reload
+    uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     ```
 
 -   The backend will be available at **`http://localhost:8000`**.
