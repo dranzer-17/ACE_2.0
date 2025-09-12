@@ -41,6 +41,11 @@ const studentNavItems = [
     label: "Timetable",
     icon: ClipboardList,
   },
+  {
+    href: "/student/feedback",
+    label: "Feedback",
+    icon: MessageSquare,
+  }
 ];
 
 export default function StudentLayout({

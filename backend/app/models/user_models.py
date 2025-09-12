@@ -23,6 +23,7 @@ class User(Base):
     role_id = Column(Integer, ForeignKey("roles.id"), nullable=False)
     role = relationship("Role")
     student_profile = relationship("StudentProfile", back_populates="user", uselist=False, cascade="all, delete-orphan")
+    feedback = relationship("Feedback", back_populates="student")
 
 # --- Student Profile Model ---
 class StudentProfile(Base):

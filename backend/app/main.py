@@ -6,7 +6,10 @@ from contextlib import asynccontextmanager
 # --- Import necessary database and model components ---
 from .database import engine, SessionLocal
 from .models import user_models
+from .models import feedback
 from .routes import auth_routes, canteen_routes
+from .api.student import feedback as student_feedback
+from .api.admin import feedback as admin_feedback
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -98,6 +101,8 @@ app.add_middleware(
 # --- Include API Routers ---
 app.include_router(auth_routes.router)
 app.include_router(canteen_routes.router)
+app.include_router(student_feedback.router, prefix="/api/student/feedback", tags=["Student Feedback"])
+app.include_router(admin_feedback.router, prefix="/api/admin/feedback", tags=["Admin Feedback"])
 
 @app.get("/", tags=["Root"])
 def read_root():
