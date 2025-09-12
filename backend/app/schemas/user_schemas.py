@@ -41,3 +41,14 @@ class UserResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class UserList(BaseModel):
+    id: int
+    full_name: str
+    email: EmailStr
+    
+    # We add a role field to be populated manually in the route
+    role: str 
+
+    class Config:
+        from_attributes = True

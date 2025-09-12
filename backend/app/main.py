@@ -3,10 +3,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
+
 # --- Import necessary database and model components ---
 from .database import engine, SessionLocal
 from .models import user_models
-from .routes import auth_routes, canteen_routes
+from .routes import auth_routes, canteen_routes, management_routes, timetable_routes, feedback_routes
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -17,7 +18,6 @@ async def lifespan(app: FastAPI):
         if db.query(user_models.Role).count() == 0:
             print("Roles/Users are empty. Seeding initial data...")
             
-            # --- THIS IS THE MISSING LOGIC THAT IS NOW RESTORED ---
             # 1. Create Roles
             student_role = user_models.Role(name="student")
             faculty_role = user_models.Role(name="faculty")
@@ -98,6 +98,9 @@ app.add_middleware(
 # --- Include API Routers ---
 app.include_router(auth_routes.router)
 app.include_router(canteen_routes.router)
+app.include_router(management_routes.router) # <-- ADD THIS LINE
+app.include_router(timetable_routes.router)
+app.include_router(feedback_routes.router) 
 
 @app.get("/", tags=["Root"])
 def read_root():

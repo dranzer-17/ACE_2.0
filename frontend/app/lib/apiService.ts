@@ -208,4 +208,142 @@ export const apiService = {
       return { success: false, message: 'An unexpected error occurred.' };
     }
   },
+
+  // --- Courses ---
+  getCourses: async () => {
+    // Reusing getMenu logic for simplicity
+    try {
+      const response = await fetch(`${API_URL}/management/courses`);
+      if (!response.ok) return { success: false, message: 'Failed to fetch courses.' };
+      return { success: true, data: await response.json() };
+    } catch (error) {
+      return { success: false, message: 'An error occurred.' };
+    }
+  },
+  createCourse: async (courseData: any) => {
+    try {
+      const response = await fetch(`${API_URL}/management/courses`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(courseData),
+      });
+      const data = await response.json();
+      if (!response.ok) return { success: false, message: data.detail || 'Failed to create course.' };
+      return { success: true, message: 'Course created!' };
+    } catch (error) {
+      return { success: false, message: 'An error occurred.' };
+    }
+  },
+  
+  // --- Classrooms ---
+  getClassrooms: async () => {
+    try {
+      const response = await fetch(`${API_URL}/management/classrooms`);
+      if (!response.ok) return { success: false, message: 'Failed to fetch classrooms.' };
+      return { success: true, data: await response.json() };
+    } catch (error) {
+      return { success: false, message: 'An error occurred.' };
+    }
+  },
+  createClassroom: async (classroomData: any) => {
+    try {
+      const response = await fetch(`${API_URL}/management/classrooms`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(classroomData),
+      });
+      const data = await response.json();
+      if (!response.ok) return { success: false, message: data.detail || 'Failed to create classroom.' };
+      return { success: true, message: 'Classroom created!' };
+    } catch (error) {
+      return { success: false, message: 'An error occurred.' };
+    }
+  },
+  
+  // --- Faculty ---
+  getFaculty: async () => {
+    try {
+      const response = await fetch(`${API_URL}/management/faculty`);
+      if (!response.ok) return { success: false, message: 'Failed to fetch faculty.' };
+      return { success: true, data: await response.json() };
+    } catch (error) {
+      return { success: false, message: 'An error occurred.' };
+    }
+  },
+
+  // --- Timetable Slots ---
+  getTimetable: async (branch: string, year: number) => {
+    try {
+      const response = await fetch(`${API_URL}/timetables/${branch}/${year}`);
+      if (!response.ok) return { success: false, message: 'Failed to fetch timetable.' };
+      return { success: true, data: await response.json() };
+    } catch (error) {
+      return { success: false, message: 'An error occurred.' };
+    }
+  },
+  createTimetableSlot: async (slotData: any) => {
+    try {
+      const response = await fetch(`${API_URL}/timetables/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(slotData),
+      });
+      const data = await response.json();
+      if (!response.ok) return { success: false, message: data.detail || 'Failed to create slot.' };
+      return { success: true, message: 'Slot created!' };
+    } catch (error) {
+      return { success: false, message: 'An error occurred.' };
+    }
+  },
+  deleteTimetableSlot: async (slotId: number) => {
+    try {
+      const response = await fetch(`${API_URL}/timetables/${slotId}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) return { success: false, message: 'Failed to delete slot.' };
+      return { success: true, message: 'Slot deleted!' };
+    } catch (error) {
+      return { success: false, message: 'An error occurred.' };
+    }
+  },
+
+  // --- Student Timetable ---
+  getMyTimetable: async (userId: number) => {
+    try {
+      const response = await fetch(`${API_URL}/timetables/my-schedule/${userId}`);
+      if (!response.ok) return { success: false, message: 'Failed to fetch schedule.' };
+      return { success: true, data: await response.json() };
+    } catch (error) {
+      return { success: false, message: 'An error occurred.' };
+    }
+  },
+  submitFeedback: async (feedbackData: any) => {
+    try {
+      const response = await fetch(`${API_URL}/feedback/student`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(feedbackData),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        return { success: false, message: data.detail || 'Failed to submit feedback.' };
+      }
+      return { success: true, message: 'Feedback submitted successfully!' };
+    } catch (error) {
+      return { success: false, message: 'An unexpected error occurred.' };
+    }
+  },
+
+  getAdminFeedback: async () => {
+    try {
+      const response = await fetch(`${API_URL}/feedback/admin`);
+      if (!response.ok) {
+        return { success: false, message: 'Failed to fetch feedback.' };
+      }
+      const data = await response.json();
+      return { success: true, data };
+    } catch (error) {
+      return { success: false, message: 'An unexpected error occurred.' };
+    }
+  },
 };

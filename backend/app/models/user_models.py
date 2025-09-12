@@ -30,8 +30,8 @@ class StudentProfile(Base):
     user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
     sap_id = Column(BigInteger, unique=True, nullable=False, index=True)
     roll_number = Column(String, unique=True, nullable=False, index=True)
-    class_name = Column(String)
-    division = Column(String)
+    branch = Column(String) # e.g., "COMPS", "IT", "AI"
+    year = Column(Integer)  # e.g., 1 for FE, 2 for SE, etc.
     user = relationship("User", back_populates="student_profile")
 
 # --- Course Model ---
@@ -48,16 +48,7 @@ class Classroom(Base):
     name = Column(String, unique=True, nullable=False)
     capacity = Column(Integer)
 
-# --- Timetable Slot Model ---
-class TimetableSlot(Base):
-    __tablename__ = "timetable_slots"
-    id = Column(Integer, primary_key=True, index=True)
-    course_id = Column(Integer, ForeignKey("courses.id"), nullable=False)
-    faculty_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    classroom_id = Column(Integer, ForeignKey("classrooms.id"), nullable=False)
-    day_of_week = Column(Integer, nullable=False)
-    start_time = Column(Time, nullable=False)
-    end_time = Column(Time, nullable=False)
+
 
 # --- Attendance Model ---
 class Attendance(Base):
@@ -133,3 +124,38 @@ class OrderItem(Base):
     special_instructions = Column(TEXT)
     menu_item = relationship("MenuItem")
     order = relationship("Order", back_populates="items")
+    
+    
+class TimetableSlot(Base):
+    __tablename__ = "timetable_slots"
+    id = Column(Integer, primary_key=True, index=True)
+    course_id = Column(Integer, ForeignKey("courses.id"), nullable=False)
+    faculty_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    classroom_id = Column(Integer, ForeignKey("classrooms.id"), nullable=False)
+    day_of_week = Column(Integer, nullable=False) # 1=Mon, 2=Tue, etc.
+    start_time = Column(Time, nullable=False)
+    end_time = Column(Time, nullable=False)
+    
+    # --- ADD THESE TWO COLUMNS ---
+    # These link the lecture to a specific student group
+    branch = Column(String, nullable=False)
+    year = Column(Integer, nullable=False)
+    course = relationship("Course")
+    faculty = relationship("User")
+    classroom = relationship("Classroom")
+
+
+class Feedback(Base):
+    __tablename__ = "feedback"
+    id = Column(Integer, primary_key=True, index=True)
+    # The student who submitted, can be NULL if anonymous
+    student_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    category = Column(String, nullable=False)
+    subject = Column(String, nullable=False)
+    rating = Column(Integer, nullable=True) # Optional rating from 1-5
+    comment = Column(TEXT, nullable=False)
+    is_anonymous = Column(Boolean, default=False)
+    created_at = Column(TIMESTAMP(timezone=True), server_default='now()')
+
+    # Relationship to get the student's details
+    student = relationship("User")
