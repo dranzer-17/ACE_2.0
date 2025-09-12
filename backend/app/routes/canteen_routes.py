@@ -15,9 +15,6 @@ router = APIRouter(
 def get_current_user_id_placeholder(user_id: int = Body(...)):
     return user_id
 
-# ===================================================================
-# --- Student-Facing Endpoints ---
-# ===================================================================
 
 @router.get("/menu", response_model=List[schemas.MenuItem])
 def get_menu(db: Session = Depends(database.get_db)):
