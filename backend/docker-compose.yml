@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  # 1. PostgreSQL Database Service
+  db:
+    # Using a standard, reliable postgres image
+    image: postgres:16-alpine
+    container_name: ace_postgres_db
+    restart: always
+    env_file:
+      - .env  # Loads the .env file from this same directory
+    environment:
+      # These variables are read by the Postgres image on startup
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    ports:
+      # This maps your host machine's port (from .env) to the container's internal port (5432)
+      # Your local backend app connects to localhost:5431
+      - "${DATABASE_PORT}:5432"
+    volumes:
+      # This creates a named Docker volume to persist your data even if the container is removed
+      - ace_postgres_data:/var/lib/postgresql/data
+    networks:
+      - ace_network
+
+  # 2. Adminer Service (Web-based Database GUI)
+  adminer:
+    image: adminer
+    container_name: ace_adminer
+    restart: always
+    ports:
+      # You can access Adminer in your browser at http://localhost:8080
+      - "8080:8080"
+    depends_on:
+      - db  # Tells Docker to start the DB before starting Adminer
+    networks:
+      - ace_network
+
+# These define the persistent volume and custom network for the ACE_2.0 project
+volumes:
+  ace_postgres_data:
+
+networks:
+  ace_network:
