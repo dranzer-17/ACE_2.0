@@ -24,6 +24,7 @@ class User(Base):
     role = relationship("Role")
     student_profile = relationship("StudentProfile", back_populates="user", uselist=False, cascade="all, delete-orphan")
     feedback = relationship("Feedback", back_populates="student")
+    collaboration_posts = relationship("CollaborationPost", back_populates="creator")
 
 # --- Student Profile Model ---
 class StudentProfile(Base):

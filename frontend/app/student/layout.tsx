@@ -45,6 +45,11 @@ const studentNavItems = [
     href: "/student/feedback",
     label: "Feedback",
     icon: MessageSquare,
+  },
+  {
+    href: "/student/collaboration",
+    label: "Collaboration",
+    icon: MessageSquare,
   }
 ];
 
