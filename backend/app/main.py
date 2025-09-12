@@ -6,8 +6,9 @@ from contextlib import asynccontextmanager
 from .database import engine, SessionLocal
 from .models import user_models
 from .routes import auth_routes
+# --- 1. Import the new router ---
+from .routes import auth_routes, canteen_routes
 
-# This function will run on application startup and shutdown
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # --- Code to run on STARTUP ---
@@ -84,3 +85,5 @@ app.include_router(auth_routes.router)
 @app.get("/", tags=["Root"])
 def read_root():
     return {"message": "Welcome to the ACE_2.0 Backend API!"}
+
+
