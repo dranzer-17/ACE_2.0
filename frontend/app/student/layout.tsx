@@ -8,6 +8,7 @@ import {
   BookOpen,
   ClipboardList,
   MessageCircle,
+  MapPlusIcon,
 } from "lucide-react";
 import { Header } from "@/components/shared/Header"; 
 // --- Define the navigation links specifically for students ---
@@ -46,6 +47,11 @@ const studentNavItems = [
     href: "/student/feedback",
     label: "Feedback",
     icon: MessageCircle,
+  },
+  {
+    href: "/student/navigation",
+    label: "Navigation",
+    icon: MapPlusIcon,
   },
 ];
 

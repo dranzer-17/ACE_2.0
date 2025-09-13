@@ -1,6 +1,19 @@
 // Get the backend URL from our environment variables
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
+
+type NavigationResult = {
+  current_location: string;
+  destination: string;
+  confidence: string;
+  path: string[];
+};
+
+type ApiResponse<T> = {
+  success: boolean;
+  message: string;
+  data?: T;
+};
 /**
  * A centralized service for making API calls to the backend.
  */
@@ -438,5 +451,47 @@ export const apiService = {
       console.error("API Error - requestBook:", error);
       return { success: false, message: error.message };
     }
-  }
+  },
+
+    getNavigationDestinations: async (): Promise<ApiResponse<string[]>> => {
+        try {
+            const response = await fetch(`${API_URL}/navigation/destinations`);
+            const data = await response.json();
+            if (!response.ok) {
+                return { success: false, message: data.detail || 'Failed to fetch destinations.' };
+            }
+            return { success: true, data, message: 'Destinations loaded.' };
+        } catch (error) {
+            console.error("API Error (getNavigationDestinations):", error);
+            return { success: false, message: 'A network error occurred.' };
+        }
+    },
+
+    /**
+     * Submits a photo and destination to get a navigation path.
+     * @param formData The FormData object containing the image file and destination string.
+     */
+    findNavigationPath: async (formData: FormData): Promise<ApiResponse<NavigationResult>> => {
+        try {
+            const response = await fetch(`${API_URL}/navigation/find-path/`, {
+                method: 'POST',
+                body: formData,
+                // IMPORTANT: Do NOT set a 'Content-Type' header here.
+                // The browser will automatically set it to 'multipart/form-data'
+                // with the correct boundary when the body is a FormData object.
+            });
+
+            const data = await response.json();
+            if (!response.ok) {
+                // Use the error message from the backend response
+                const errorMessage = data.error || data.detail || 'Failed to find a path.';
+                return { success: false, message: errorMessage };
+            }
+            return { success: true, data, message: 'Path found successfully.' };
+        } catch (error) {
+            console.error("API Error (findNavigationPath):", error);
+            return { success: false, message: 'A network error occurred.' };
+        }
+    },
+  
 };
