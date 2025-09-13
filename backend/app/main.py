@@ -7,7 +7,7 @@ from .models import user_models, library_models
 # --- Import necessary database and model components ---
 from .database import engine, SessionLocal
 from .models import user_models
-from .routes import auth_routes, canteen_routes, management_routes, timetable_routes, feedback_routes, library_routes, navigation_routes, chat_routes, committee_routes
+from .routes import auth_routes, canteen_routes, management_routes, timetable_routes, feedback_routes, library_routes, navigation_routes, chat_routes
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -22,8 +22,9 @@ async def lifespan(app: FastAPI):
             student_role = user_models.Role(name="student")
             faculty_role = user_models.Role(name="faculty")
             admin_role = user_models.Role(name="admin")
+            committee_role = user_models.Role(name="committee")
             
-            db.add_all([student_role, faculty_role, admin_role])
+            db.add_all([student_role, faculty_role, admin_role, committee_role])
             db.commit() # Commit roles first to get their IDs
 
             # 2. Create Default Admin User
@@ -42,7 +43,15 @@ async def lifespan(app: FastAPI):
                 role_id=faculty_role.id
             )
 
-            # 4. Create Student Users
+            # 4. Create Committee User
+            committee_user = user_models.User(
+                full_name="Committee Member",
+                email="committee@college.edu",
+                password="committeepass",
+                role_id=committee_role.id
+            )
+
+            # 5. Create Student Users
             student1 = user_models.User(
                 full_name="Vidhi Shah",
                 email="vidhi@college.edu",
@@ -57,7 +66,7 @@ async def lifespan(app: FastAPI):
                 role_id=student_role.id
             )
             
-            db.add_all([admin_user, faculty_user, student1, student2])
+            db.add_all([admin_user, faculty_user, committee_user, student1, student2])
             db.commit()
             print("Database roles/users seeding complete!")
         else:
@@ -132,8 +141,7 @@ app.include_router(timetable_routes.router)
 app.include_router(feedback_routes.router) 
 app.include_router(library_routes.router)
 app.include_router(navigation_routes.router)
-app.include_router(chat_routes.router)
-app.include_router(committee_routes.router) 
+app.include_router(chat_routes.router) 
 
 @app.get("/", tags=["Root"])
 def read_root():

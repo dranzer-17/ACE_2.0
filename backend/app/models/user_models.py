@@ -62,6 +62,23 @@ class Attendance(Base):
     date = Column(Date, nullable=False)
     status = Column(String, nullable=False)
 
+# --- Sick Leave Request Model ---
+class SickLeaveRequest(Base):
+    __tablename__ = "sick_leave_requests"
+    id = Column(Integer, primary_key=True, index=True)
+    student_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    start_date = Column(Date, nullable=False)
+    end_date = Column(Date, nullable=False)
+    reason = Column(TEXT, nullable=False)
+    status = Column(String, nullable=False, default="pending")  # pending, approved, rejected
+    submitted_at = Column(TIMESTAMP, server_default=func.now())
+    reviewed_at = Column(TIMESTAMP, nullable=True)
+    reviewed_by_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    
+    # Relationships
+    student = relationship("User", foreign_keys=[student_id])
+    reviewed_by = relationship("User", foreign_keys=[reviewed_by_id])
+
 # --- Grade Model ---
 class Grade(Base):
     __tablename__ = "grades"

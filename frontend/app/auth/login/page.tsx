@@ -23,9 +23,32 @@ export default function LoginPage() {
     try {
       const success = await login(email, password);
       if (success) {
-        router.push('/student/chat');
+        // Get user data from localStorage to determine redirect
+        const userData = localStorage.getItem('user');
+        if (userData) {
+          const user = JSON.parse(userData);
+          // Redirect based on user role
+          switch (user.role) {
+            case 'student':
+              router.push('/student/chat');
+              break;
+            case 'faculty':
+              router.push('/faculty/dashboard');
+              break;
+            case 'admin':
+              router.push('/admin/dashboard');
+              break;
+            case 'committee':
+              router.push('/committee/dashboard');
+              break;
+            default:
+              router.push('/student/chat');
+          }
+        } else {
+          router.push('/student/chat');
+        }
       } else {
-        setError('Invalid credentials. Please check the demo credentials below or ensure the backend is running.');
+        setError('Invalid credentials. Please check your email and password.');
       }
     } catch (err) {
       setError('Login failed. Please try again.');
@@ -38,9 +61,9 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Login to Chat</CardTitle>
+          <CardTitle>Login to ACE 2.0</CardTitle>
           <CardDescription>
-            Enter your credentials to access the chat system
+            Enter your credentials to access the campus solution platform
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -78,6 +101,16 @@ export default function LoginPage() {
               {isLoading ? 'Logging in...' : 'Login'}
             </Button>
           </form>
+          
+          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+            <h3 className="font-semibold text-sm mb-2">Demo Credentials:</h3>
+            <div className="space-y-2 text-xs">
+              <div><strong>Student:</strong> vidhi@college.edu / password123</div>
+              <div><strong>Faculty:</strong> teacher@college.edu / teacherpass</div>
+              <div><strong>Admin:</strong> admin@college.edu / adminpass</div>
+              <div><strong>Committee:</strong> committee@college.edu / committeepass</div>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>

@@ -4,7 +4,7 @@
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { api } from '@/lib/mockApi';
+import { attendanceApi } from '@/lib/attendanceApi';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input";
@@ -21,6 +21,7 @@ interface AttendanceRecord {
   endDate: string;
   reason: string;
   status: 'pending' | 'approved' | 'rejected';
+  submitted_at?: string;
 }
 
 export default function AttendancePage() {
@@ -38,7 +39,7 @@ export default function AttendancePage() {
     if (user) {
       const fetchData = async () => {
         setIsLoading(true);
-        const attendanceData = await api.getStudentAttendance(user.id);
+        const attendanceData = await attendanceApi.getSickLeaveHistory();
         setRecords(attendanceData);
         setIsLoading(false);
       };
@@ -53,17 +54,16 @@ export default function AttendancePage() {
     if (!user) return;
 
     setIsSubmitting(true);
-    const result = await api.submitSickLeave({
-      studentId: user.id,
-      startDate,
-      endDate,
+    const result = await attendanceApi.submitSickLeave({
+      start_date: startDate,
+      end_date: endDate,
       reason
     });
     
     if (result.success) {
       toast.success(result.message);
       // Refetch the records to show the new pending request
-      const updatedRecords = await api.getStudentAttendance(user.id);
+      const updatedRecords = await attendanceApi.getSickLeaveHistory();
       setRecords(updatedRecords);
       // Reset form
       setStartDate('');
