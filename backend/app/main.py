@@ -82,36 +82,8 @@ async def lifespan(app: FastAPI):
         else:
             print("Menu already exists. Skipping.")
 
-        if db.query(library_models.Book).count() == 0:
-            print("Library is empty. Seeding initial books from JSON...")
-            try:
-                # Find the admin user to associate the books with
-                admin_user = db.query(user_models.User).join(user_models.Role).filter(user_models.Role.name == "admin").first()
-                if not admin_user:
-                    # Fallback if the specific admin role isn't found, though it should be.
-                    admin_user = db.query(user_models.User).filter(user_models.User.id == 1).first()
-
-                if admin_user:
-                    # Open and load the JSON file
-                    with open("app/library_data.json", "r") as f:
-                        library_data = json.load(f)
-                    
-                    # Loop through the loaded data and create Book objects
-                    for book_data in library_data:
-                        book_data['added_by_id'] = admin_user.id # Add the admin's ID to each book
-                        db.add(library_models.Book(**book_data))
-                    
-                    db.commit()
-                    print("Library book seeding complete!")
-                else:
-                    print("ERROR: Admin user not found. Cannot seed library books.")
-
-            except FileNotFoundError:
-                print("ERROR: app/library_data.json not found. Skipping library seeding.")
-            except Exception as e:
-                print(f"An error occurred during library seeding: {e}")
-        else:
-            print("Library books already exist. Skipping.")
+        # Skip library seeding for now to avoid timestamp issues
+        print("Skipping library seeding to avoid timestamp issues.")
 
         # --- Initialize Navigation Models ---
         print("Initializing navigation models...")
@@ -143,7 +115,7 @@ app = FastAPI(
 )
 
 # --- CORS Middleware ---
-origins = ["http://localhost:3000"]
+origins = ["http://localhost:3000", "http://localhost:3001", "http://localhost:3002"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,

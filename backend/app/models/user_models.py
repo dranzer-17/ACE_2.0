@@ -4,6 +4,7 @@ from sqlalchemy import (
     Column, Integer, String, ForeignKey, BigInteger, Date, Time, 
     DECIMAL, TEXT, Boolean, TIMESTAMP
 )
+from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from ..database import Base
 
@@ -30,6 +31,8 @@ class StudentProfile(Base):
     user_id = Column(Integer, ForeignKey("users.id"), primary_key=True)
     sap_id = Column(BigInteger, unique=True, nullable=False, index=True)
     roll_number = Column(String, unique=True, nullable=False, index=True)
+    class_name = Column(String) # e.g., "Computer Science Year 3"
+    division = Column(String)   # e.g., "A", "B", "C"
     branch = Column(String) # e.g., "COMPS", "IT", "AI"
     year = Column(Integer)  # e.g., 1 for FE, 2 for SE, etc.
     user = relationship("User", back_populates="student_profile")
@@ -69,7 +72,7 @@ class Grade(Base):
     score = Column(DECIMAL(5, 2), nullable=False)
     total_marks = Column(DECIMAL(5, 2), nullable=False)
     # --- CORRECTED TIMESTAMP ---
-    graded_at = Column(TIMESTAMP, server_default='CURRENT_TIMESTAMP')
+    graded_at = Column(TIMESTAMP, server_default=func.now())
 
 # --- Event Model ---
 class Event(Base):
@@ -90,7 +93,7 @@ class ActivityLog(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     action = Column(TEXT, nullable=False)
     # --- CORRECTED TIMESTAMP ---
-    timestamp = Column(TIMESTAMP, server_default='CURRENT_TIMESTAMP')
+    timestamp = Column(TIMESTAMP, server_default=func.now())
 
 class MenuItem(Base):
     __tablename__ = "menu_items"
@@ -110,7 +113,7 @@ class Order(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     status = Column(String, nullable=False, default="placed")
     # --- CORRECTED TIMESTAMP ---
-    created_at = Column(TIMESTAMP, server_default='CURRENT_TIMESTAMP')
+    created_at = Column(TIMESTAMP, server_default=func.now())
     user = relationship("User")
     items = relationship("OrderItem", back_populates="order", cascade="all, delete-orphan")
 
@@ -155,7 +158,7 @@ class Feedback(Base):
     rating = Column(Integer, nullable=True) # Optional rating from 1-5
     comment = Column(TEXT, nullable=False)
     is_anonymous = Column(Boolean, default=False)
-    created_at = Column(TIMESTAMP, server_default='CURRENT_TIMESTAMP')
+    created_at = Column(TIMESTAMP, server_default=func.now())
 
     # Relationship to get the student's details
     student = relationship("User")

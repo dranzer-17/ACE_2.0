@@ -169,7 +169,9 @@ def get_my_books_student(student_id: int, db: Session = Depends(get_db)):
     now = datetime.now(timezone.utc)
     alloc_list = []
     for alloc in allocations:
-        days_remaining = (alloc.due_date - now).days
+        # Ensure both datetimes are timezone-aware for comparison
+        due_date = alloc.due_date.replace(tzinfo=timezone.utc) if alloc.due_date.tzinfo is None else alloc.due_date
+        days_remaining = (due_date - now).days
         alloc_list.append({
             "id": alloc.id,
             "book": {"title": alloc.book.title, "author": alloc.book.author},

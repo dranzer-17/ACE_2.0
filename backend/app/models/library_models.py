@@ -2,6 +2,7 @@ import enum
 from sqlalchemy import (
     Column, Integer, String, ForeignKey, TEXT, Boolean, TIMESTAMP, Enum
 )
+from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from ..database import Base
 
@@ -33,14 +34,14 @@ class Book(Base):
     available_copies = Column(Integer, default=1)
     status = Column(Enum(BookStatus), default=BookStatus.available)
     added_by_id = Column(Integer, ForeignKey("users.id"))
-    created_at = Column(TIMESTAMP(timezone=True), server_default='now()')
+    created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
 
 class BookAllocation(Base):
     __tablename__ = "library_allocations"
     id = Column(Integer, primary_key=True, index=True)
     book_id = Column(Integer, ForeignKey("library_books.id"), nullable=False)
     student_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    allocated_at = Column(TIMESTAMP(timezone=True), server_default='now()')
+    allocated_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
     due_date = Column(TIMESTAMP(timezone=True), nullable=False)
     returned_at = Column(TIMESTAMP(timezone=True))
     status = Column(Enum(AllocationStatus), default=AllocationStatus.active)
@@ -55,7 +56,7 @@ class BookQueue(Base):
     student_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     position = Column(Integer, nullable=False)
     status = Column(Enum(QueueStatus), default=QueueStatus.waiting)
-    requested_at = Column(TIMESTAMP(timezone=True), server_default='now()')
+    requested_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
     notified_at = Column(TIMESTAMP(timezone=True))
     expires_at = Column(TIMESTAMP(timezone=True))
     
