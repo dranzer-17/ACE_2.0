@@ -10,6 +10,7 @@ import {
   MessageCircle,
   MapPlusIcon,
   Trophy,
+  Users,
 } from "lucide-react";
 import { Header } from "@/components/shared/Header"; 
 // --- Define the navigation links specifically for students ---
@@ -58,6 +59,11 @@ const studentNavItems = [
     href: "/student/achievements",
     label: "Achievements",
     icon: Trophy,
+  },
+  {
+    href: "/student/committees",
+    label: "Committees",
+    icon: Users,
   },
 ];
 

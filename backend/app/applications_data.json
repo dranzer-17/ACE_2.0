@@ -1,0 +1,23 @@
+[
+  {
+    "id": "417b59bf-f946-4dab-a118-765fd54f1a7f",
+    "student_id": "student123",
+    "student_name": "John Doe",
+    "student_email": "john.doe@college.edu",
+    "committee_id": 1,
+    "position_id": 1,
+    "cover_message": "XCBFDH",
+    "resume_skills": [
+      "leadership",
+      "communication",
+      "programming",
+      "event_planning",
+      "teamwork"
+    ],
+    "experience": "DZSG",
+    "recommendation_score": 50.0,
+    "recommendation_reason": "Moderate match. You have 2 out of 4 required skills: communication, leadership",
+    "applied_at": "2025-09-13T11:26:08.847049",
+    "status": "accepted"
+  }
+]

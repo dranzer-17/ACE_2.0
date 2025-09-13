@@ -1,0 +1,146 @@
+[
+  {
+    "id": 1,
+    "name": "Student Council",
+    "description": "The Student Council represents the voice of students and works to improve campus life through various initiatives and events.",
+    "positions": [
+      {
+        "id": 1,
+        "title": "President",
+        "description": "Lead the student council and represent students in college administration meetings",
+        "requirements": ["Leadership experience", "Public speaking", "Event management"],
+        "skills_required": ["leadership", "communication", "management", "public_speaking"],
+        "status": "open",
+        "application_deadline": "2025-010-15"
+      },
+      {
+        "id": 2,
+        "title": "Vice President",
+        "description": "Support the president and manage internal council operations",
+        "requirements": ["Team management", "Organizational skills", "Communication"],
+        "skills_required": ["leadership", "organization", "communication", "teamwork"],
+        "status": "open",
+        "application_deadline": "2025-010-15"
+      },
+      {
+        "id": 3,
+        "title": "Secretary",
+        "description": "Maintain records, manage communications, and coordinate meetings",
+        "requirements": ["Documentation skills", "Time management", "Communication"],
+        "skills_required": ["documentation", "organization", "communication", "time_management"],
+        "status": "open",
+        "application_deadline": "2025-02-15"
+      }
+    ],
+    "category": "governance",
+    "contact_email": "studentcouncil@college.edu"
+  },
+  {
+    "id": 2,
+    "name": "Technical Committee",
+    "description": "Organizes technical events, workshops, and competitions to enhance students' technical skills.",
+    "positions": [
+      {
+        "id": 4,
+        "title": "Technical Head",
+        "description": "Lead technical initiatives and coordinate with industry professionals",
+        "requirements": ["Programming experience", "Project management", "Technical expertise"],
+        "skills_required": ["programming", "project_management", "technical_writing", "leadership"],
+        "status": "open",
+        "application_deadline": "2025-02-20"
+      },
+      {
+        "id": 5,
+        "title": "Workshop Coordinator",
+        "description": "Organize and manage technical workshops and training sessions",
+        "requirements": ["Event planning", "Technical knowledge", "Communication"],
+        "skills_required": ["event_planning", "programming", "communication", "training"],
+        "status": "open",
+        "application_deadline": "2025-02-20"
+      }
+    ],
+    "category": "technical",
+    "contact_email": "tech@college.edu"
+  },
+  {
+    "id": 3,
+    "name": "Cultural Committee",
+    "description": "Organizes cultural events, festivals, and artistic activities to promote creativity and cultural diversity.",
+    "positions": [
+      {
+        "id": 6,
+        "title": "Cultural Secretary",
+        "description": "Plan and execute cultural events and festivals",
+        "requirements": ["Event management", "Creativity", "Team coordination"],
+        "skills_required": ["event_planning", "creativity", "teamwork", "communication"],
+        "status": "open",
+        "application_deadline": "2025-02-18"
+      },
+      {
+        "id": 7,
+        "title": "Performance Coordinator",
+        "description": "Coordinate performances and artistic activities",
+        "requirements": ["Performance arts background", "Organization", "Networking"],
+        "skills_required": ["performance_arts", "organization", "networking", "creativity"],
+        "status": "open",
+        "application_deadline": "2025-02-18"
+      }
+    ],
+    "category": "cultural",
+    "contact_email": "cultural@college.edu"
+  },
+  {
+    "id": 4,
+    "name": "Sports Committee",
+    "description": "Promotes sports activities, organizes tournaments, and manages athletic facilities.",
+    "positions": [
+      {
+        "id": 8,
+        "title": "Sports Captain",
+        "description": "Lead sports activities and represent the college in inter-college competitions",
+        "requirements": ["Sports background", "Leadership", "Team management"],
+        "skills_required": ["sports", "leadership", "teamwork", "fitness"],
+        "status": "open",
+        "application_deadline": "2025-02-22"
+      },
+      {
+        "id": 9,
+        "title": "Event Coordinator",
+        "description": "Organize sports events and manage tournament logistics",
+        "requirements": ["Event planning", "Sports knowledge", "Logistics management"],
+        "skills_required": ["event_planning", "sports", "logistics", "organization"],
+        "status": "open",
+        "application_deadline": "2025-02-22"
+      }
+    ],
+    "category": "sports",
+    "contact_email": "sports@college.edu"
+  },
+  {
+    "id": 5,
+    "name": "Media Committee",
+    "description": "Manages college media, social media presence, and documentation of events.",
+    "positions": [
+      {
+        "id": 10,
+        "title": "Media Head",
+        "description": "Oversee all media activities and social media strategy",
+        "requirements": ["Media experience", "Content creation", "Social media management"],
+        "skills_required": ["media_production", "content_creation", "social_media", "photography"],
+        "status": "open",
+        "application_deadline": "2025-02-25"
+      },
+      {
+        "id": 11,
+        "title": "Content Writer",
+        "description": "Create content for college publications and social media",
+        "requirements": ["Writing skills", "Creativity", "Research abilities"],
+        "skills_required": ["writing", "creativity", "research", "communication"],
+        "status": "open",
+        "application_deadline": "2025-02-25"
+      }
+    ],
+    "category": "media",
+    "contact_email": "media@college.edu"
+  }
+]
