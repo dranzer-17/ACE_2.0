@@ -65,7 +65,7 @@ export default function AdminCanteenPage() {
     if (menuResult.success) {
       setMenu(menuResult.data);
     } else {
-      toast.error(menuResult.message);
+      toast.error("Failed to fetch menu items");
     }
     setIsLoading(false);
   };

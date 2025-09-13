@@ -41,8 +41,23 @@ async def lifespan(app: FastAPI):
                 password="teacherpass",
                 role_id=faculty_role.id
             )
+
+            # 4. Create Student Users
+            student1 = user_models.User(
+                full_name="Vidhi Shah",
+                email="vidhi@college.edu",
+                password="password123",
+                role_id=student_role.id
+            )
+
+            student2 = user_models.User(
+                full_name="Kavish Shah",
+                email="kavish@college.edu",
+                password="password123",
+                role_id=student_role.id
+            )
             
-            db.add_all([admin_user, faculty_user])
+            db.add_all([admin_user, faculty_user, student1, student2])
             db.commit()
             print("Database roles/users seeding complete!")
         else:

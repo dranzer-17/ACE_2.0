@@ -83,13 +83,13 @@ export const apiService = {
     try {
       const response = await fetch(`${API_URL}/canteen/menu`);
       if (!response.ok) {
-        return { success: false, message: 'Failed to fetch menu.' };
+        throw new Error('Failed to fetch menu.');
       }
       const data = await response.json();
       return { success: true, data };
     } catch (error) {
       console.error("Get Menu API error:", error);
-      return { success: false, message: 'An unexpected error occurred.' };
+      return { success: false, message: 'Failed to fetch menu. Please try again later.' };
     }
   },
 
@@ -100,21 +100,32 @@ export const apiService = {
    */
   placeOrder: async (orderData: any) => { // <-- SIMPLIFIED: only one argument now
     try {
+      console.log("Sending order data to backend:", JSON.stringify(orderData, null, 2));
+      
       const response = await fetch(`${API_URL}/canteen/orders`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        // --- SIMPLIFIED: Just send the orderData object directly ---
         body: JSON.stringify(orderData),
       });
 
-      const data = await response.json();
+      console.log("Response status:", response.status, response.statusText);
+
       if (!response.ok) {
-        return { success: false, message: data.detail || 'Failed to place order.' };
+        let errorData;
+        try {
+          errorData = await response.json();
+          console.log("Validation error details:", JSON.stringify(errorData, null, 2));
+        } catch (jsonError) {
+          errorData = { detail: `HTTP ${response.status}: ${response.statusText}` };
+        }
+        return { success: false, message: errorData.detail || errorData.message || 'Failed to place order.' };
       }
+      
+      const data = await response.json();
       return { success: true, message: 'Order placed successfully!', order: data };
     } catch (error) {
       console.error("Place Order API error:", error);
-      return { success: false, message: 'An unexpected error occurred.' };
+      return { success: false, message: 'An unexpected error occurred while placing the order.' };
     }
   },
 
@@ -420,7 +431,7 @@ export const apiService = {
       return { success: true, data: await response.json() };
     } catch (error) {
       console.error("API Error - getStudentBooks:", error);
-      return { success: false, message: "Could not load books." };
+      return { success: false, message: "Could not load books from the library." };
     }
   },
 
@@ -432,7 +443,7 @@ export const apiService = {
       return { success: true, data: await response.json() };
     } catch (error) {
       console.error("API Error - getMyBooks:", error);
-      return { success: false, message: "Could not load your books." };
+      return { success: false, message: "Could not load your books from the library." };
     }
   },
 

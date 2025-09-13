@@ -1,4 +1,8 @@
 // Mock API for chat functionality
+
+import initialAchievements from '../data/achievements.json';
+import initialUsers from '../data/users.json';
+
 export const api = {
   async getChatData(userId: string) {
     // Mock data for channels and users
@@ -137,5 +141,80 @@ export const api = {
     }
     
     return { success: true, messageId: Date.now().toString() };
-  }
+  },
+
+  getCollegeAchievements: (): Promise<any[]> => {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          const achievements = getFromStorage('achievements', initialAchievements);
+          const users = getFromStorage('users', initialUsers);
+
+          // Enrich each achievement with the student's name and branch
+          const enrichedAchievements = achievements
+            .filter((ach: any) => ach.approved) // Only show approved achievements
+            .map((achievement: any) => {
+              const student = users.find((user: any) => user.id === achievement.studentId);
+              return {
+                ...achievement,
+                studentName: student ? student.name : 'Unknown Student',
+                studentBranch: student ? student.branch : 'N/A',
+              };
+            })
+            // Sort by most recent date first
+            .sort((a: { date: string | number | Date; }, b: { date: string | number | Date; }) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+          resolve(enrichedAchievements);
+        }, 600);
+      });
+    },
+
+  async getStudentAttendance(userId: string) {
+    // Mock attendance records for the student
+    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
+    
+    const mockAttendanceRecords = [
+      {
+        id: '1',
+        startDate: '2025-09-01',
+        endDate: '2025-09-03',
+        reason: 'Fever and cold',
+        status: 'approved' as const
+      },
+      {
+        id: '2',
+        startDate: '2025-08-15',
+        endDate: '2025-08-16',
+        reason: 'Medical checkup',
+        status: 'approved' as const
+      },
+      {
+        id: '3',
+        startDate: '2025-09-10',
+        endDate: '2025-09-11',
+        reason: 'Stomach flu',
+        status: 'pending' as const
+      }
+    ];
+
+    return mockAttendanceRecords;
+  },
+
+  async submitSickLeave(data: { studentId: string; startDate: string; endDate: string; reason: string }) {
+    // Mock submitting sick leave request
+    console.log('Submitting sick leave:', data);
+    
+    // Simulate network delay
+    await new Promise(resolve => setTimeout(resolve, 800));
+    
+    // Mock successful submission
+    return {
+      success: true,
+      message: 'Sick leave request submitted successfully. Awaiting faculty approval.'
+    };
+  },
 };
+function getFromStorage(key: string, defaultValue: any) {
+  // For mock purposes, return the default value
+  return defaultValue;
+}
+

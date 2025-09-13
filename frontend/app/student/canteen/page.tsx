@@ -118,14 +118,19 @@ export default function StudentCanteenPage() {
     if (!user || cart.length === 0) return;
     setIsPlacingOrder(true);
 
+    console.log("Current user:", user);
+    console.log("User ID:", user.id, "Type:", typeof user.id);
+
     const fullOrderData = {
-      user_id: user.id,
+      user_id: parseInt(user.id), // Convert string ID to integer
       items: cart.map(ci => ({
         menu_item_id: ci.menuItem.id,
         quantity: ci.quantity,
         special_instructions: ci.instructions,
       })),
     };
+    
+    console.log("Order data being sent:", fullOrderData);
     
     const result = await apiService.placeOrder(fullOrderData);
 

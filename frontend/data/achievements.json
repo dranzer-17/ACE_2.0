@@ -1,0 +1,47 @@
+[
+  {
+    "id": "achieve-1",
+    "studentId": "student-1",
+    "type": "Hackathon",
+    "title": "Winner, Smart India Hackathon 2024",
+    "description": "Developed a solution for waste management using computer vision.",
+    "date": "2024-03-15",
+    "approved": true
+  },
+  {
+    "id": "achieve-2",
+    "studentId": "student-1",
+    "type": "Internship",
+    "title": "Software Engineering Intern at Google",
+    "description": "Worked on the Google Cloud team, focusing on backend infrastructure.",
+    "date": "2024-08-01",
+    "approved": true
+  },
+  {
+    "id": "achieve-3",
+    "studentId": "student-2",
+    "type": "Competition",
+    "title": "Rank 1, Codeforces Div. 2 Contest",
+    "description": "Achieved first place in a global competitive programming contest.",
+    "date": "2024-09-10",
+    "approved": true
+  },
+  {
+    "id": "achieve-4",
+    "studentId": "student-2",
+    "type": "Research",
+    "title": "Published Paper on Distributed Systems",
+    "description": "Co-authored a paper on consensus algorithms, published in an IEEE journal.",
+    "date": "2025-01-20",
+    "approved": true
+  },
+  {
+    "id": "achieve-5",
+    "studentId": "student-1",
+    "type": "Competition",
+    "title": "Finalist, Microsoft Imagine Cup",
+    "description": "Reached the national finals with a project on accessible technology.",
+    "date": "2025-04-05",
+    "approved": true
+  }
+]

@@ -25,7 +25,7 @@ export default function LoginPage() {
       if (success) {
         router.push('/student/chat');
       } else {
-        setError('Invalid credentials. Use student@university.edu / password');
+        setError('Invalid credentials. Please check the demo credentials below or ensure the backend is running.');
       }
     } catch (err) {
       setError('Login failed. Please try again.');
@@ -78,11 +78,6 @@ export default function LoginPage() {
               {isLoading ? 'Logging in...' : 'Login'}
             </Button>
           </form>
-          <div className="mt-4 text-sm text-gray-600">
-            <p><strong>Demo Credentials:</strong></p>
-            <p>Email: student@university.edu</p>
-            <p>Password: password</p>
-          </div>
         </CardContent>
       </Card>
     </div>

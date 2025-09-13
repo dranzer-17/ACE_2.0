@@ -16,6 +16,19 @@ def get_current_user_id_placeholder(user_id: int = Body(...)):
     return user_id
 
 
+@router.get("/debug/info")
+def get_debug_info(db: Session = Depends(database.get_db)):
+    """
+    Debug endpoint to check database state
+    """
+    users = db.query(models.User).all()
+    menu_items = db.query(models.MenuItem).all()
+    
+    return {
+        "users": [{"id": u.id, "name": u.full_name, "email": u.email} for u in users],
+        "menu_items": [{"id": m.id, "name": m.name, "price": m.price} for m in menu_items]
+    }
+
 @router.get("/menu", response_model=List[schemas.MenuItem])
 def get_menu(db: Session = Depends(database.get_db)):
     """
@@ -31,9 +44,28 @@ def place_order(order_data: schemas.OrderCreate, db: Session = Depends(database.
     Allows a student to place a new order.
     The user_id is now part of the order_data object.
     """
+    print(f"Received order data: {order_data}")
+    
+    # Validate user exists
     user = db.query(models.User).filter(models.User.id == order_data.user_id).first()
     if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        available_users = db.query(models.User).all()
+        print(f"Available users: {[(u.id, u.full_name) for u in available_users]}")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail=f"User with ID {order_data.user_id} not found. Please ensure the user is registered."
+        )
+    
+    # Validate all menu items exist
+    for item_data in order_data.items:
+        menu_item = db.query(models.MenuItem).filter(models.MenuItem.id == item_data.menu_item_id).first()
+        if not menu_item:
+            available_items = db.query(models.MenuItem).all()
+            print(f"Available menu items: {[(m.id, m.name) for m in available_items]}")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Menu item with ID {item_data.menu_item_id} not found."
+            )
         
     new_order = models.Order(user_id=order_data.user_id, status="placed")
     db.add(new_order)
@@ -49,8 +81,19 @@ def place_order(order_data: schemas.OrderCreate, db: Session = Depends(database.
         db.add(new_order_item)
     
     db.commit()
-    db.refresh(new_order)
-    return new_order
+    
+    # Reload the order with all relationships to ensure proper serialization
+    order_with_relations = (
+        db.query(models.Order)
+        .options(
+            joinedload(models.Order.user),
+            joinedload(models.Order.items).joinedload(models.OrderItem.menu_item)
+        )
+        .filter(models.Order.id == new_order.id)
+        .first()
+    )
+    
+    return order_with_relations
 
 # ===================================================================
 # --- Admin-Facing Endpoints ---

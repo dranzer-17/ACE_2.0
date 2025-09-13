@@ -64,7 +64,7 @@ export default function StudentLibraryPage() {
       setLoading(true);
       const [booksRes, myBooksRes] = await Promise.all([
         apiService.getStudentBooks(),
-        apiService.getMyBooks(user.id), // Pass the logged-in user's ID
+        apiService.getMyBooks(Number(user.id)), // Pass the logged-in user's ID
       ]);
 
       if (booksRes.success) {
@@ -102,14 +102,14 @@ export default function StudentLibraryPage() {
       return;
     }
 
-    const result = await apiService.requestBook(bookId, user.id); // Pass user's ID
+    const result = await apiService.requestBook(bookId, Number(user.id)); // Pass user's ID
     toast[result.success ? "success" : "error"](result.data?.message || result.message);
 
     if (result.success) {
       // Re-fetch all data to update both "Browse" and "My Books" tabs
       const booksRes = await apiService.getStudentBooks();
       if(booksRes.success) setBooks(booksRes.data);
-      const myBooksRes = await apiService.getMyBooks(user.id);
+      const myBooksRes = await apiService.getMyBooks(Number(user.id));
       if(myBooksRes.success) setMyBooks(myBooksRes.data);
     }
   };
