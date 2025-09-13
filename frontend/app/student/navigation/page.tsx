@@ -26,6 +26,7 @@ export default function NavigationPage() {
   
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isFetchingDestinations, setIsFetchingDestinations] = useState<boolean>(true);
+  const [isStartingCamera, setIsStartingCamera] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   
   const [stream, setStream] = useState<MediaStream | null>(null);
@@ -57,7 +58,7 @@ export default function NavigationPage() {
     fetchDestinations();
   }, []);
 
-  // --- Camera Cleanup ---
+  // --- Camera Cleanup and Video Initialization ---
   useEffect(() => {
     return () => {
       if (stream) {
@@ -66,26 +67,74 @@ export default function NavigationPage() {
     };
   }, [stream]);
 
+  // --- Video Element Initialization ---
+  useEffect(() => {
+    if (stream && videoRef.current) {
+      videoRef.current.srcObject = stream;
+      videoRef.current.onloadedmetadata = () => {
+        if (videoRef.current) {
+          videoRef.current.play().catch(console.error);
+        }
+      };
+    }
+  }, [stream]);
+
   // --- Core Functions ---
   const handleStartCamera = async () => {
     setError(null);
     setResult(null);
     setCapturedImage(null);
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      try {
-        const mediaStream = await navigator.mediaDevices.getUserMedia({ 
-            video: { facingMode: "environment" } 
-        });
-        setStream(mediaStream);
-        if (videoRef.current) {
-          videoRef.current.srcObject = mediaStream;
-        }
-      } catch (err) {
-        console.error("Camera Error:", err);
-        setError("Camera permission was denied. Please allow camera access in your browser settings.");
-      }
-    } else {
+    setIsStartingCamera(true);
+    
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       setError("Your browser does not support camera access.");
+      setIsStartingCamera(false);
+      return;
+    }
+
+    try {
+      // Stop any existing stream first
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        setStream(null);
+      }
+
+      // Request camera access
+      const mediaStream = await navigator.mediaDevices.getUserMedia({ 
+        video: { 
+          facingMode: "environment",
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        } 
+      });
+      
+      setStream(mediaStream);
+      
+      // Ensure video element is properly connected
+      if (videoRef.current) {
+        videoRef.current.srcObject = mediaStream;
+        // Force the video to load and play
+        videoRef.current.onloadedmetadata = () => {
+          if (videoRef.current) {
+            videoRef.current.play().catch(console.error);
+          }
+        };
+      }
+      
+      console.log("Camera started successfully");
+      setIsStartingCamera(false);
+    } catch (err: any) {
+      console.error("Camera Error:", err);
+      setIsStartingCamera(false);
+      if (err.name === 'NotAllowedError') {
+        setError("Camera permission was denied. Please allow camera access in your browser settings and refresh the page.");
+      } else if (err.name === 'NotFoundError') {
+        setError("No camera found. Please make sure you have a camera connected.");
+      } else if (err.name === 'NotReadableError') {
+        setError("Camera is already in use by another application.");
+      } else {
+        setError(`Camera error: ${err.message}`);
+      }
     }
   };
 
@@ -159,16 +208,27 @@ export default function NavigationPage() {
     }
   };
 
-  // --- UI Rendering (WITH VISUAL FIX) ---
+  // --- UI Rendering (FIXED) ---
   const renderContent = () => {
     if (stream) {
       return (
-        <div className="relative aspect-video w-full overflow-hidden rounded-md border">
-          <video ref={videoRef} autoPlay playsInline className="h-full w-full object-cover" />
+        <div className="relative aspect-video w-full overflow-hidden rounded-md border bg-black">
+          <video 
+            ref={videoRef} 
+            autoPlay 
+            playsInline 
+            muted
+            className="h-full w-full object-cover"
+            style={{ transform: 'scaleX(-1)' }} // Mirror the video for better UX
+          />
+          <div className="absolute inset-0 bg-black/20 pointer-events-none" />
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
-            <Button onClick={handleTakePhoto} size="lg" className="rounded-full h-16 w-16">
+            <Button onClick={handleTakePhoto} size="lg" className="rounded-full h-16 w-16 bg-white/90 hover:bg-white text-black border-2 border-white shadow-lg">
               <Camera className="h-8 w-8" />
             </Button>
+          </div>
+          <div className="absolute top-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+            Live Camera
           </div>
         </div>
       );
@@ -176,13 +236,15 @@ export default function NavigationPage() {
     
     if (capturedImage) {
       return (
-        // VISUAL FIX IS HERE: Parent is 'relative', Image is 'absolute inset-0'
         <div className="relative aspect-video w-full overflow-hidden rounded-md border bg-muted">
           <img 
             src={capturedImage} 
             alt="Captured location" 
-            className="absolute inset-0 h-full w-full object-cover"
+            className="w-full h-full object-cover"
           />
+          <div className="absolute top-2 left-2 bg-black/50 text-white px-2 py-1 rounded text-xs">
+            Captured location
+          </div>
         </div>
       );
     }
@@ -194,9 +256,22 @@ export default function NavigationPage() {
         <p className="text-sm text-muted-foreground mb-4">
           Allow camera access and point it at your surroundings.
         </p>
-        <Button onClick={handleStartCamera}>
-          <Wand2 className="mr-2 h-4 w-4"/> Start Camera
+        <Button onClick={handleStartCamera} className="mb-4" disabled={isStartingCamera}>
+          {isStartingCamera ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin"/> Starting Camera...
+            </>
+          ) : (
+            <>
+              <Wand2 className="mr-2 h-4 w-4"/> Start Camera
+            </>
+          )}
         </Button>
+        {!navigator.mediaDevices && (
+          <p className="text-xs text-red-500 mt-2">
+            Camera not supported in this browser
+          </p>
+        )}
       </div>
     );
   };

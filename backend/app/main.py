@@ -7,7 +7,7 @@ from .models import user_models, library_models
 # --- Import necessary database and model components ---
 from .database import engine, SessionLocal
 from .models import user_models
-from .routes import auth_routes, canteen_routes, management_routes, timetable_routes, feedback_routes, library_routes, navigation_routes
+from .routes import auth_routes, canteen_routes, management_routes, timetable_routes, feedback_routes, library_routes, navigation_routes, chat_routes
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -98,6 +98,15 @@ async def lifespan(app: FastAPI):
         else:
             print("Library books already exist. Skipping.")
 
+        # --- Initialize Navigation Models ---
+        print("Initializing navigation models...")
+        try:
+            from .routes.navigation_routes import initialize_navigation_models
+            initialize_navigation_models()
+            print("Navigation models initialized successfully!")
+        except Exception as e:
+            print(f"Warning: Failed to initialize navigation models: {e}")
+
     finally:
         db.close()
     
@@ -135,7 +144,8 @@ app.include_router(management_routes.router) # <-- ADD THIS LINE
 app.include_router(timetable_routes.router)
 app.include_router(feedback_routes.router) 
 app.include_router(library_routes.router)
-app.include_router(navigation_routes.router) 
+app.include_router(navigation_routes.router)
+app.include_router(chat_routes.router) 
 
 @app.get("/", tags=["Root"])
 def read_root():

@@ -41,7 +41,7 @@ def get_image_embedding(image_path, model_name):
     try:
         preprocessor = preprocessors[model_name]
         image = preprocessor(Image.open(image_path)).unsqueeze(0).to(device)
-        with torch.no_grad(), torch.cuda.amp.autocast():
+        with torch.no_grad(), torch.amp.autocast(device_type='cuda' if torch.cuda.is_available() else 'cpu'):
             embedding = models[model_name].encode_image(image)
             embedding /= embedding.norm(dim=-1, keepdim=True)
         return embedding
@@ -50,7 +50,7 @@ def get_image_embedding(image_path, model_name):
 
 def get_text_embedding(text, model_name):
     """Generates a normalized embedding for a text description."""
-    with torch.no_grad(), torch.cuda.amp.autocast():
+    with torch.no_grad(), torch.amp.autocast(device_type='cuda' if torch.cuda.is_available() else 'cpu'):
         tokens = tokenizer(text).to(device)
         embedding = models[model_name].encode_text(tokens)
         embedding /= embedding.norm(dim=-1, keepdim=True)

@@ -493,5 +493,118 @@ export const apiService = {
             return { success: false, message: 'A network error occurred.' };
         }
     },
+
+  // --- Chat API Methods ---
+  getChatRooms: async (userId: string) => {
+    try {
+      const response = await fetch(`${API_URL}/chat/rooms/${userId}`);
+      const data = await response.json();
+      if (!response.ok) {
+        return { success: false, message: data.detail || 'Failed to fetch chat rooms.' };
+      }
+      return { success: true, data: data.data, message: 'Chat rooms loaded successfully.' };
+    } catch (error) {
+      console.error("API Error (getChatRooms):", error);
+      return { success: false, message: 'A network error occurred.' };
+    }
+  },
+
+  getChatMessages: async (roomId: string, limit: number = 50) => {
+    try {
+      const response = await fetch(`${API_URL}/chat/messages/${roomId}?limit=${limit}`);
+      const data = await response.json();
+      if (!response.ok) {
+        return { success: false, message: data.detail || 'Failed to fetch messages.' };
+      }
+      return { success: true, data: data.data, message: 'Messages loaded successfully.' };
+    } catch (error) {
+      console.error("API Error (getChatMessages):", error);
+      return { success: false, message: 'A network error occurred.' };
+    }
+  },
+
+  sendChatMessage: async (messageData: any) => {
+    try {
+      const response = await fetch(`${API_URL}/chat/send`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(messageData),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        return { success: false, message: data.detail || 'Failed to send message.' };
+      }
+      return { success: true, data: data.data, message: 'Message sent successfully.' };
+    } catch (error) {
+      console.error("API Error (sendChatMessage):", error);
+      return { success: false, message: 'A network error occurred.' };
+    }
+  },
+
+  getOnlineUsers: async () => {
+    try {
+      const response = await fetch(`${API_URL}/chat/users/online`);
+      const data = await response.json();
+      if (!response.ok) {
+        return { success: false, message: data.detail || 'Failed to fetch online users.' };
+      }
+      return { success: true, data: data.data, message: 'Online users loaded successfully.' };
+    } catch (error) {
+      console.error("API Error (getOnlineUsers):", error);
+      return { success: false, message: 'A network error occurred.' };
+    }
+  },
+
+  setUserOnline: async (userId: string, isOnline: boolean = true) => {
+    try {
+      const response = await fetch(`${API_URL}/chat/users/${userId}/online`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_online: isOnline }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        return { success: false, message: data.detail || 'Failed to update user status.' };
+      }
+      return { success: true, message: 'User status updated successfully.' };
+    } catch (error) {
+      console.error("API Error (setUserOnline):", error);
+      return { success: false, message: 'A network error occurred.' };
+    }
+  },
+
+  createChatRoom: async (roomData: any) => {
+    try {
+      const response = await fetch(`${API_URL}/chat/rooms`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(roomData),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        return { success: false, message: data.detail || 'Failed to create chat room.' };
+      }
+      return { success: true, data: data.data, message: 'Chat room created successfully.' };
+    } catch (error) {
+      console.error("API Error (createChatRoom):", error);
+      return { success: false, message: 'A network error occurred.' };
+    }
+  },
+
+  markMessageRead: async (messageId: string) => {
+    try {
+      const response = await fetch(`${API_URL}/chat/messages/${messageId}/read`, {
+        method: 'POST',
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        return { success: false, message: data.detail || 'Failed to mark message as read.' };
+      }
+      return { success: true, message: 'Message marked as read.' };
+    } catch (error) {
+      console.error("API Error (markMessageRead):", error);
+      return { success: false, message: 'A network error occurred.' };
+    }
+  },
   
 };

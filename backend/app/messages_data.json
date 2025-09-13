@@ -1,0 +1,92 @@
+{
+  "messages": [
+    {
+      "id": "msg_001",
+      "roomId": "university_general",
+      "senderId": "2",
+      "senderName": "Sarah Johnson",
+      "senderAvatar": "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=32&h=32&fit=crop&crop=face",
+      "content": "Hey everyone! How's everyone doing with the midterm exams?",
+      "timestamp": "2024-01-15T10:30:00.000Z",
+      "isRead": true,
+      "messageType": "text"
+    },
+    {
+      "id": "msg_002",
+      "roomId": "university_general",
+      "senderId": "4",
+      "senderName": "Emily Davis",
+      "senderAvatar": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=32&h=32&fit=crop&crop=face",
+      "content": "Pretty good! The math exam was challenging but I think I did well \u00f0\u0178\u02dc\u0160",
+      "timestamp": "2024-01-15T10:35:00.000Z",
+      "isRead": true,
+      "messageType": "text"
+    },
+    {
+      "id": "msg_003",
+      "roomId": "computer_science",
+      "senderId": "1",
+      "senderName": "John Student",
+      "senderAvatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face",
+      "content": "Anyone working on the AI project? Need some help with the neural network implementation",
+      "timestamp": "2024-01-15T14:20:00.000Z",
+      "isRead": false,
+      "messageType": "text"
+    },
+    {
+      "id": "msg_004",
+      "roomId": "computer_science",
+      "senderId": "5",
+      "senderName": "Alex Rodriguez",
+      "senderAvatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=32&h=32&fit=crop&crop=face",
+      "content": "I can help! Which part are you struggling with?",
+      "timestamp": "2024-01-15T14:25:00.000Z",
+      "isRead": false,
+      "messageType": "text"
+    },
+    {
+      "id": "msg_005",
+      "roomId": "study_group",
+      "senderId": "4",
+      "senderName": "Emily Davis",
+      "senderAvatar": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=32&h=32&fit=crop&crop=face",
+      "content": "Study session tomorrow at the library at 2 PM. Who's joining?",
+      "timestamp": "2024-01-15T16:45:00.000Z",
+      "isRead": true,
+      "messageType": "text"
+    },
+    {
+      "id": "msg_006",
+      "roomId": "university_general",
+      "senderId": "6",
+      "senderName": "Dr. Smith",
+      "senderAvatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face",
+      "content": "Good luck with your exams everyone! Remember to take breaks and stay hydrated \u00f0\u0178\u2019\u00a7",
+      "timestamp": "2024-01-15T11:00:00.000Z",
+      "isRead": true,
+      "messageType": "text"
+    },
+    {
+      "id": "e6b9f9c0-90c3-4d65-b391-f6dd43f15113",
+      "roomId": "university_general",
+      "senderId": "1",
+      "senderName": "John Student",
+      "senderAvatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face",
+      "content": "B",
+      "timestamp": "2025-09-13T01:09:25.008562+00:00",
+      "isRead": false,
+      "messageType": "text"
+    },
+    {
+      "id": "ee0e7381-b4c1-4749-8b82-488ebe7f20cd",
+      "roomId": "university_general",
+      "senderId": "1",
+      "senderName": "John Student",
+      "senderAvatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face",
+      "content": "HII",
+      "timestamp": "2025-09-13T01:11:18.012163+00:00",
+      "isRead": false,
+      "messageType": "text"
+    }
+  ]
+}

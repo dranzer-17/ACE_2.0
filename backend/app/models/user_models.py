@@ -69,7 +69,7 @@ class Grade(Base):
     score = Column(DECIMAL(5, 2), nullable=False)
     total_marks = Column(DECIMAL(5, 2), nullable=False)
     # --- CORRECTED TIMESTAMP ---
-    graded_at = Column(TIMESTAMP(timezone=True), server_default='now()')
+    graded_at = Column(TIMESTAMP, server_default='CURRENT_TIMESTAMP')
 
 # --- Event Model ---
 class Event(Base):
@@ -79,8 +79,8 @@ class Event(Base):
     description = Column(TEXT)
     location = Column(String)
     # --- CORRECTED TIMESTAMP ---
-    start_time = Column(TIMESTAMP(timezone=True), nullable=False)
-    end_time = Column(TIMESTAMP(timezone=True))
+    start_time = Column(TIMESTAMP, nullable=False)
+    end_time = Column(TIMESTAMP)
     created_by_id = Column(Integer, ForeignKey("users.id"))
 
 # --- Activity Log Model ---
@@ -90,7 +90,7 @@ class ActivityLog(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     action = Column(TEXT, nullable=False)
     # --- CORRECTED TIMESTAMP ---
-    timestamp = Column(TIMESTAMP(timezone=True), server_default='now()')
+    timestamp = Column(TIMESTAMP, server_default='CURRENT_TIMESTAMP')
 
 class MenuItem(Base):
     __tablename__ = "menu_items"
@@ -110,7 +110,7 @@ class Order(Base):
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     status = Column(String, nullable=False, default="placed")
     # --- CORRECTED TIMESTAMP ---
-    created_at = Column(TIMESTAMP(timezone=True), server_default='now()')
+    created_at = Column(TIMESTAMP, server_default='CURRENT_TIMESTAMP')
     user = relationship("User")
     items = relationship("OrderItem", back_populates="order", cascade="all, delete-orphan")
 
@@ -155,7 +155,7 @@ class Feedback(Base):
     rating = Column(Integer, nullable=True) # Optional rating from 1-5
     comment = Column(TEXT, nullable=False)
     is_anonymous = Column(Boolean, default=False)
-    created_at = Column(TIMESTAMP(timezone=True), server_default='now()')
+    created_at = Column(TIMESTAMP, server_default='CURRENT_TIMESTAMP')
 
     # Relationship to get the student's details
     student = relationship("User")
